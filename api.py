@@ -1,16 +1,25 @@
 import justpy as jp
 
+from definition import Definition
+import json
+
 
 class Api:
-    """Handles requests at /api?w=word"""
+    """Handles requests at /api?w=Word"""
 
     @classmethod
     def serve(cls, req):
         wp = jp.WebPage()
-        word = req.query_params.get('w')
-        wp.html = word.title()
+        word = req.query_params.get('w').capitalize()
+
+        defined = Definition(word).get()
+
+        response = {
+            'word': word,
+            'definition': defined
+        }
+        wp.html = json.dumps(response)
         return wp
 
 
-jp.Route('/api', Api.serve)
-jp.justpy()
+
